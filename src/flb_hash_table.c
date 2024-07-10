@@ -247,7 +247,7 @@ static struct flb_hash_table_entry *hash_get_entry(struct flb_hash_table *ht,
     return entry;
 }
 
-static int entry_set_value(struct flb_hash_table_entry *entry, void *val, size_t val_size)
+static int entry_set_value(struct flb_hash_table_entry *entry, void *val, ssize_t val_size)
 {
     char *ptr;
 
@@ -403,7 +403,7 @@ int flb_hash_table_get(struct flb_hash_table *ht,
 
     entry->hits++;
     *out_buf = entry->val;
-    *out_size = entry->val_size;
+    *out_size = (entry->val_size >= 0) ? entry->val_size : 0;
 
     return id;
 }
@@ -436,7 +436,7 @@ int flb_hash_table_exists(struct flb_hash_table *ht, uint64_t hash)
  */
 int flb_hash_table_get_by_id(struct flb_hash_table *ht, int id,
                              const char *key,
-                             const char **out_buf, size_t * out_size)
+                             const char **out_buf, ssize_t * out_size)
 {
     struct mk_list *head;
     struct flb_hash_table_entry *entry = NULL;
@@ -470,7 +470,7 @@ int flb_hash_table_get_by_id(struct flb_hash_table *ht, int id,
     }
 
     *out_buf = entry->val;
-    *out_size = entry->val_size;
+    *out_size = (entry->val_size >= 0) ? entry->val_size : 0;
 
     return 0;
 }
